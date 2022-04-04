@@ -42,15 +42,26 @@ class fuzzy
 	 fuzzy();
 	 ~fuzzy();
 	 //fuzzy matrix模糊关系矩阵计算
-	 void fm_calculate();
+	 void Fuzzy_Control_Matrix_cal(int a,int b,int c);
 	 void Set_Rules();
+
+
+	 //返回a和b之间数值小的那个
+	 float min(float a,float b);
+	 //返回a和b之间数值大的那个
+	 float max(float a,float b);
+
+	 
+	 //储存某一规则下E、EC和U组成的模糊关系矩阵
+	 float FC_Matrix_Final[14 * 13][13];
+	 
  
 private:
 	//角度误差论域[-6,6]共计14个数(分+0和-0，所以14个)
 
 	float E[8][14] = 
 	{ 
-//论域-6    -5    -4    -3     -2    -1    -0    +0     1     2     3     4     5    6
+    //-6    -5    -4    -3     -2    -1    -0    +0     1     2     3     4     5    6
 	{ 1.0,  0.8,  0.4,  0.1,    0,    0,    0,    0,    0,    0,    0,    0,    0,   0},//NL
  
 	{ 0.2,  0.7,  1.0,  0.7,  0.2,    0,    0,    0,    0,    0,    0,    0,    0,   0},//NM
@@ -72,7 +83,7 @@ private:
 	//角速度误差论域，同
 	float EC[7][13] = 
 	{
-//论域-6    -5    -4    -3     -2    -1     0     1     2     3     4     5     6
+    //-6    -5    -4    -3     -2    -1     0     1     2     3     4     5     6
 	{ 1.0,  0.8,  0.4,  0.1,    0,    0,    0,    0,    0,    0,    0,    0,    0},//NL
 
 	{ 0.2,  0.7,  1.0,  0.7,  0.2,    0,    0,    0,    0,    0,    0,    0,    0},//NM
@@ -81,18 +92,18 @@ private:
 
 	{   0,    0,    0,    0,    0,  0.5,  1.0,  0.5,    0,    0,    0,    0,    0},//ZO
 
-	{   0,    0,    0,    0,    0,    0,    0,  0.9,  1.0,  0.7,  0.2,    0,    0},//PO
+	{   0,    0,    0,    0,    0,    0,    0,  0.9,  1.0,  0.7,  0.2,    0,    0},//PS
 
-	{   0,    0,    0,    0,    0,    0,    0,    0,  0.2,  0.7,  1.0,  0.7,  0.2},//PS
+	{   0,    0,    0,    0,    0,    0,    0,    0,  0.2,  0.7,  1.0,  0.7,  0.2},//PM
 
-	{   0,    0,    0,    0,    0,    0,    0,    0,    0,  0.1,  0.4,  0.8,  1.0} //PM
+	{   0,    0,    0,    0,    0,    0,    0,    0,    0,  0.1,  0.4,  0.8,  1.0} //PL
 	};
 
 
 	//输出量论域，同
 	float U[7][13] =  
 	{
-//论域-6    -5    -4    -3     -2    -1     0     1     2     3     4     5     6
+    //-6    -5    -4    -3     -2    -1     0     1     2     3     4     5     6
 	{ 1.0,  0.8,  0.4,  0.1,    0,    0,    0,    0,    0,    0,    0,    0,    0},//NL
 
 	{ 0.2,  0.7,  1.0,  0.7,  0.2,    0,    0,    0,    0,    0,    0,    0,    0},//NM
@@ -112,21 +123,26 @@ private:
 	//模糊规则，储存在矩阵中，若该位置数值为666，则表示不可能出现的情况（死区）
 	float rules[7][8] =
 	{
+    //ENL   ENM   ENS   ENO   EPO   EPS   EPM   EPL
+	{ 666,  666,  UPL,  UPL,  UPL,  UPL,  UNM,  UNL},//ECNL
 
-	{ 666,  666,  UPL,  UPL,  UPL,  UPL,  UNM,  UNL},//NL
+	{ UPM,  UPS,  UPS,  UPM,  UPM,  UPM,  UNM,  UNL},//ECNM
 
-	{ UPM,  UPS,  UPS,  UPM,  UPM,  UPM,  UNM,  UNL},//NM
+	{ UPL,  UPM,  UPS,  UPS,  UPS,  UPS,  UNM,  UNL},//ECNS
 
-	{ UPL,  UPM,  UPS,  UPS,  UPS,  UPS,  UNM,  UNL},//NS
+	{ UPL,  UPM,  UPS,  UZO,  UZO,  UNS,  UNM,  UNL},//ECZO
 
-	{ UPL,  UPM,  UPS,  UZO,  UZO,  UNS,  UNM,  UNL},//ZO
+	{ UPL,  UPM,  UNS,  UNS,  UNS,  UNS,  UNM,  UNL},//ECPS
 
-	{ UPL,  UPM,  UNS,  UNS,  UNS,  UNS,  UNM,  UNL},//PO
+	{ UPL,  UPM,  UNM,  UNM,  UNS,  UNS,  UNS,  UNM},//ECPM
 
-	{ UPL,  UPM,  UNM,  UNM,  UNS,  UNS,  UNS,  UNM},//PS
-
-	{ UPL,  UPM,  UNL,  UNL,  UNL,  UNL,  666,  666} //PM
+	{ UPL,  UPM,  UNL,  UNL,  UNL,  UNL,  666,  666} //ECPL
 	};
+	//存贮E和EC组成的模糊关系矩阵
+	float FC_Matrix[14][13];
+	float FC_Matrix_Use[14 * 13];
+
+
 };
 
 
