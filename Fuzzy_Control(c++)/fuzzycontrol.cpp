@@ -6,7 +6,7 @@ fuzzy::fuzzy(){}
 fuzzy::~fuzzy() {}
 
 
-
+//取两个数之间数值较小的数
 float fuzzy::min(float a, float b)
 {
 	if (a < b)
@@ -15,6 +15,7 @@ float fuzzy::min(float a, float b)
 		return b;
 }
 
+//取两个数之间数值较大的数
 float fuzzy::max(float a, float b)
 {
 	if (a > b)
@@ -22,8 +23,115 @@ float fuzzy::max(float a, float b)
 	else
 		return b;
 }
+//四舍五入取整
+int fuzzy::round_float(float number)
+{
+	return (number > 0.0) ? (number + 0.5) : (number - 0.5);
+}
 
 
+//输入量的模糊化处理
+//将输入的角度偏差和角速度偏差转化为对应的模糊集合
+void fuzzy::Fuzzy_Input(float target_e, float current_value_e,float target_ec,float current_value_ec)
+{
+	error = current_value_e - target_e;
+	dderror = current_value_ec - target_ec;
+	e = error/10;
+	ec = dderror/20;
+	//找到e对应的模糊集合的状态
+	if (e <= -5)
+		for (int i = 0; i < 14; i++)
+			e1[i] = E[ENL][i];
+	if (e>-5&&e<=-3 )
+		for (int i = 0; i < 14; i++)
+			e1[i] = E[ENM][i];
+	if (e > -3 && e <=-1)
+		for (int i = 0; i < 14; i++)
+			e1[i] = E[ENS][i];
+	if (e > -1 && e <= 0)
+		for (int i = 0; i < 14; i++)
+			e1[i] = E[ENO][i];
+	if (e > 0 && e <= 1)
+		for (int i = 0; i < 14; i++)
+			e1[i] = E[EPO][i];
+	if (e > 1 && e <= 3)
+		for (int i = 0; i < 14; i++)
+			e1[i] = E[EPS][i];
+	if (e > 3 && e <= 5)
+		for (int i = 0; i < 14; i++)
+			e1[i] = E[EPM][i];
+	if (e > 5)
+		for (int i = 0; i < 14; i++)
+			e1[i] = E[EPL][i];
+
+	//找到ec对应的模糊集合的状态
+	if (ec <= -5)
+		for (int i = 0; i < 13; i++)
+			ec1[i] = EC[ECNL][i];
+	if (ec > -5 && ec <= -3)
+		for (int i = 0; i < 13; i++)
+			ec1[i] = EC[ECNM][i];
+	if (ec > -3 && ec <= -1)
+		for (int i = 0; i < 13; i++)
+			ec1[i] = EC[ECNS][i];
+	if (ec > -1 && ec <= 1)
+		for (int i = 0; i < 13; i++)
+			ec1[i] = EC[ECZO][i];
+	if (ec > 1 && ec <= 3)
+		for (int i = 0; i < 13; i++)
+			ec1[i] = EC[ECPS][i];
+	if (ec > 3 && ec <= 5)
+		for (int i = 0; i < 13; i++)
+			ec1[i] = EC[ECPM][i];
+	if (ec > 5)
+		for (int i = 0; i < 13; i++)
+			ec1[i] = EC[ECPL][i]; 
+
+}
+
+//根据输入模糊关系矩阵计算输出模糊关系矩阵
+void fuzzy::U_Calculate()
+{
+	//计算E和EC的模糊关系矩阵
+	int q = 0;
+	for (int j = 0; j < 14; j++)
+	{
+		for (int i = 0; i < 13; i++)
+		{
+
+			FC_Matrix_1[j][i] = min(e1[j], ec1[i]);
+			FC_Matrix_Use_1[q] = FC_Matrix_1[j][i];
+			q++;
+		}
+	}
+
+	float zuida;
+	for (int w = 0; w < 13; w++)
+	{
+		for (int f = 0; f < 14 * 13; f++)
+			use[f] = min(FC_Matrix_Use_1[f], FC_Matrix_Total[f][w]);
+		zuida = use[0];
+		for (int f = 0; f < 14 * 13; f++)
+		{
+			if (use[f] >= zuida)
+				zuida = use[f];
+		}
+		U_Final[w] = zuida;
+	}
+	//测试程序
+	/*
+	for (int f = 0; f < 14 * 13; f++)
+		use[f] = min(FC_Matrix_Use_1[f], FC_Matrix_Total[f][1]);
+	zuida = use[0];
+	for (int f = 0; f < 14 * 13; f++)
+	{
+		if (use[f] >= zuida)
+			zuida = use[f];
+	}
+	U_Final[1] = zuida;
+	*/
+}
+ 
 //模糊矩阵的计算
 //a E模糊集合（行数）
 //b EC模糊集合（行数）
