@@ -51,10 +51,15 @@ class fuzzy
 	 //返回a和b之间数值大的那个
 	 float max(float a,float b);
 
-	 
+	 //计算所有模糊矩阵的并集（把所有模糊矩阵叠到一起）
+	 void Fuzzy_Control_Matrix_Total();
+
 	 //储存某一规则下E、EC和U组成的模糊关系矩阵
 	 float FC_Matrix_Final[14 * 13][13];
-	 
+
+
+	 //最终蕴含所有模糊规则的模糊矩阵
+	 float FC_Matrix_Total[14 * 13][13];
  
 private:
 	//角度误差论域[-6,6]共计14个数(分+0和-0，所以14个)
@@ -138,6 +143,7 @@ private:
 
 	{ UPL,  UPM,  UNL,  UNL,  UNL,  UNL,  666,  666} //ECPL
 	};
+
 	//存贮E和EC组成的模糊关系矩阵
 	float FC_Matrix[14][13];
 	float FC_Matrix_Use[14 * 13];
