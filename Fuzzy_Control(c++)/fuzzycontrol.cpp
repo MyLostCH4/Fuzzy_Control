@@ -190,28 +190,25 @@ void fuzzy::Fuzzy_Control_Matrix_Total()
 				{
 					FC_Matrix_Total[a][b] = max(FC_Matrix_Total[a][b],FC_Matrix_Final[a][b]);
 				}
-
-
-			/*
-			for (int a = 0; a < 14 * 13; a++)
-			{
-				for (int b = 0; b < 13; b++)
-				{
-					FC_Matrix_Final_Last[a][b] = FC_Matrix_Final[a][b];
-				}
-			}
+		}
+	}
+}
+void fuzzy::Fuzzy_Control_Matrix_Total_1()
+{
+	float matrix[56][1][1];
+	for (int i = 0; i < 7; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (rules[i][j] != 666)
+				Fuzzy_Control_Matrix_cal(i, j, rules[i][j]);
 			if (rules[i][j] == 666)
 				continue;
-			if(rules[i][j]!=666)
-				Fuzzy_Control_Matrix_cal(i,j,rules[i][j]);
-			for (int c = 0; c < 14 * 13; c++)
-			{
-				for (int d = 0; d < 13; d++)
+			for (int a = 0; a < 14 * 13; a++)
+				for (int b = 0; b < 13; b++)
 				{
-					FC_Matrix_Total[c][d] = max(FC_Matrix_Final_Last[c][d], FC_Matrix_Final[c][d]);
+					FC_Matrix_Total[a][b] = max(FC_Matrix_Total[a][b], FC_Matrix_Final[a][b]);
 				}
-			}
-			*/
 		}
 	}
 }

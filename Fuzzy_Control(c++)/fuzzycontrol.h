@@ -55,6 +55,7 @@ class fuzzy
 
 	 //计算所有模糊矩阵的并集（把所有模糊矩阵叠到一起）
 	 void Fuzzy_Control_Matrix_Total();
+	 void Fuzzy_Control_Matrix_Total_1();
 
 	
 	 
@@ -184,8 +185,6 @@ private:
 
 	{ UPL,  UPM,  UNL,  UNL,  UNL,  UNL,  666,  666} //ECPL
 	};
-
-
 
 };
 
