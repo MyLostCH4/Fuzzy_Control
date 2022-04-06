@@ -60,9 +60,10 @@ class fuzzy
 	 
 	 //输入量的模糊化处理
 	 void Fuzzy_Input(float target_e, float current_value_e, float target_ec, float current_value_ec);
-
+	 //计算输出的模糊矩阵
 	 void U_Calculate();
-
+	 //对输出的模糊矩阵解模糊化
+	 void U_Defuzzy();
 
 
 
@@ -96,6 +97,9 @@ class fuzzy
 	 float e1[14];
 	 float ec1[13];
 	 float u1[13];
+	 //储存输出模糊矩阵U的精确解
+	 float u;
+	 float u_total;
 
 	 float use[13 * 14];
 private:

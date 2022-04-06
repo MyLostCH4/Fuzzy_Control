@@ -131,7 +131,20 @@ void fuzzy::U_Calculate()
 	U_Final[1] = zuida;
 	*/
 }
- 
+void fuzzy::U_Defuzzy()
+{
+	int a = 0;
+	for (int i = -6; i <= 6; i++)
+	{
+		u = u + i * U_Final[a];
+		a++;
+	}
+	for (int i = 0; i < 13; i++)
+	{
+		u_total = u_total + U_Final[i];
+	}
+	u = u / u_total;
+}
 //模糊矩阵的计算
 //a E模糊集合（行数）
 //b EC模糊集合（行数）

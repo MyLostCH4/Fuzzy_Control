@@ -9,9 +9,13 @@ void main()
 
 	a.Fuzzy_Control_Matrix_Total();
 	
-	a.Fuzzy_Input(60,30,150,10);
+	a.Fuzzy_Input(0, 1, 0, 0);
 
 	a.U_Calculate();
+
+	a.U_Defuzzy();
+
+	
 
 	cout << "E对应的模糊集合：" << endl;
 	for (int i = 0; i < 14; i++)
@@ -34,7 +38,10 @@ void main()
 	for (int i = 0; i < 13; i++)
 		cout << a.U_Final[i] << " ";
 	cout << endl;
-	 
+	
+	cout << "将输出模糊矩阵解模糊化后的精确输出量：" << endl;
+	cout << a.u << endl;
+	/*
 	cout << "总的模糊关系矩阵:" << endl;
 	for (int i = 0; i < 14 * 13; i++)
 	{
@@ -46,6 +53,7 @@ void main()
 				cout << a.FC_Matrix_Total[i][j] << endl;
 		}
 	}
+	*/
 	 
 }
 
